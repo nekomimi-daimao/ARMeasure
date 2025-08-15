@@ -65,6 +65,32 @@
             }
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const measureBlock = document.getElementById('measureBlock');
+            const outlineBlock = document.getElementById('outlineBlock');
+            const inputWidth = document.getElementById('inputWidth');
+            const inputHeight = document.getElementById('inputHeight');
+            const inputDepth = document.getElementById('inputDepth');
+
+            const updateBlockDimensions = () => {
+                const width = parseFloat(inputWidth.value);
+                const height = parseFloat(inputHeight.value);
+                const depth = parseFloat(inputDepth.value);
+
+                // 両方のブロックのジオメトリを更新
+                measureBlock.setAttribute('geometry', `primitive: box; width: ${width}; height: ${height}; depth: ${depth}`);
+                outlineBlock.setAttribute('geometry', `primitive: box; width: ${width}; height: ${height}; depth: ${depth}`);
+            };
+
+            inputWidth.addEventListener('input', updateBlockDimensions);
+            inputHeight.addEventListener('input', updateBlockDimensions);
+            inputDepth.addEventListener('input', updateBlockDimensions);
+
+            // 初期ロード時にも寸法を適用
+            updateBlockDimensions();
+        });
+    </script>
     <style>
         .ui-container {
             position: absolute;
@@ -128,31 +154,6 @@
         </a-camera>
     </a-scene>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const measureBlock = document.getElementById('measureBlock');
-            const outlineBlock = document.getElementById('outlineBlock');
-            const inputWidth = document.getElementById('inputWidth');
-            const inputHeight = document.getElementById('inputHeight');
-            const inputDepth = document.getElementById('inputDepth');
 
-            const updateBlockDimensions = () => {
-                const width = parseFloat(inputWidth.value);
-                const height = parseFloat(inputHeight.value);
-                const depth = parseFloat(inputDepth.value);
-
-                // 両方のブロックのジオメトリを更新
-                measureBlock.setAttribute('geometry', `primitive: box; width: ${width}; height: ${height}; depth: ${depth}`);
-                outlineBlock.setAttribute('geometry', `primitive: box; width: ${width}; height: ${height}; depth: ${depth}`);
-            };
-
-            inputWidth.addEventListener('input', updateBlockDimensions);
-            inputHeight.addEventListener('input', updateBlockDimensions);
-            inputDepth.addEventListener('input', updateBlockDimensions);
-
-            // 初期ロード時にも寸法を適用
-            updateBlockDimensions();
-        });
-    </script>
 </body>
 </html>
