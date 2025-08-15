@@ -20,7 +20,7 @@
                 this.el.sceneEl.addEventListener('mousedown', this.onStart);
                 this.el.sceneEl.addEventListener('mousemove', this.onMove);
                 this.el.sceneEl.addEventListener('mouseup', this.onEnd);
-                this.el.sceneEl.addEventListener('mouseleave', this.onEnd); // ウィンドウ外にマウスが移動した場合
+                this.el.sceneEl.addEventListener('mouseleave', this.onEnd);
 
                 // タッチイベント (モバイル対応)
                 this.el.sceneEl.addEventListener('touchstart', this.onStart);
@@ -30,12 +30,11 @@
             },
 
             onStart: function (evt) {
-                // 左クリックまたは単一のタッチ
                 if (evt.button === 0 || (evt.touches && evt.touches.length === 1)) {
                     this.isDragging = true;
                     this.initialClientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
                     this.initialRotation = this.el.getAttribute('rotation').y;
-                    evt.preventDefault(); // タッチデバイスでのスクロールを防止
+                    evt.preventDefault();
                 }
             },
 
@@ -44,11 +43,10 @@
 
                 const currentClientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
                 const deltaX = currentClientX - this.initialClientX;
-                // 感度を調整 (値を大きくすると回転が速くなる)
-                const rotationY = this.initialRotation - deltaX * 0.1; // 直感的なドラッグのためにdeltaを反転
+                const rotationY = this.initialRotation - deltaX * 0.1;
 
                 this.el.setAttribute('rotation', `0 ${rotationY} 0`);
-                evt.preventDefault(); // タッチデバイスでのスクロールを防止
+                evt.preventDefault();
             },
 
             onEnd: function () {
@@ -56,7 +54,6 @@
             },
 
             remove: function () {
-                // イベントリスナーを削除 (コンポーネントが破棄される場合)
                 this.el.sceneEl.removeEventListener('mousedown', this.onStart);
                 this.el.sceneEl.removeEventListener('mousemove', this.onMove);
                 this.el.sceneEl.removeEventListener('mouseup', this.onEnd);
@@ -68,25 +65,95 @@
             }
         });
     </script>
+    <style>
+        .ui-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 999; /* A-Frameシーンの上に表示 */
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .ui-container label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .ui-container input[type="number"] {
+            width: 80px;
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
+    <!-- UI要素 -->
+    <div class="ui-container">
+        <label>
+            幅 (m):
+            <input type="number" id="inputWidth" value="1" min="0.1" step="0.1">
+        </label>
+        <label>
+            高さ (m):
+            <input type="number" id="inputHeight" value="2" min="0.1" step="0.1">
+        </label>
+        <label>
+            奥行き (m):
+            <input type="number" id="inputDepth" value="0.5" min="0.1" step="0.1">
+        </label>
+    </div>
+
     <a-scene vr-mode-ui='enabled: false' embedded arjs>
         <a-camera>
             <!-- ここにARオブジェクトと計測ロジックを追加します -->
             <a-entity
+                id="measureBlock" <!-- IDを追加 -->
                 material='color: blue; opacity: 0.5; transparent: true'
                 geometry='primitive: box; width: 1; height: 2; depth: 0.5'
                 position="0 0 -5"
                 scale="1 1 1"
                 drag-rotate>
+                <!-- 輪郭線用のブロックを子オブジェクトとして追加 -->
                 <a-entity
+                    id="outlineBlock" <!-- IDを追加 -->
                     material='color: black; wireframe: true'
                     geometry='primitive: box; width: 1; height: 2; depth: 0.5'
                     position="0 0 0"
-                    scale="1.02 1.02 1.02"> <!-- わずかに大きくして輪郭線にする -->
+                    scale="1.02 1.02 1.02">
                 </a-entity>
             </a-entity>
         </a-camera>
     </a-scene>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const measureBlock = document.getElementById('measureBlock');
+            const outlineBlock = document.getElementById('outlineBlock');
+            const inputWidth = document.getElementById('inputWidth');
+            const inputHeight = document.getElementById('inputHeight');
+            const inputDepth = document.getElementById('inputDepth');
+
+            const updateBlockDimensions = () => {
+                const width = parseFloat(inputWidth.value);
+                const height = parseFloat(inputHeight.value);
+                const depth = parseFloat(inputDepth.value);
+
+                // 両方のブロックのジオメトリを更新
+                measureBlock.setAttribute('geometry', `primitive: box; width: ${width}; height: ${height}; depth: ${depth}`);
+                outlineBlock.setAttribute('geometry', `primitive: box; width: ${width}; height: ${height}; depth: ${depth}`);
+            };
+
+            inputWidth.addEventListener('input', updateBlockDimensions);
+            inputHeight.addEventListener('input', updateBlockDimensions);
+            inputDepth.addEventListener('input', updateBlockDimensions);
+
+            // 初期ロード時にも寸法を適用
+            updateBlockDimensions();
+        });
+    </script>
 </body>
 </html>
