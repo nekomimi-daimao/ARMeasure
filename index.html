@@ -72,6 +72,9 @@
             const inputWidth = document.getElementById('inputWidth');
             const inputHeight = document.getElementById('inputHeight');
             const inputDepth = document.getElementById('inputDepth');
+            const displayWidth = document.getElementById('displayWidth');
+            const displayHeight = document.getElementById('displayHeight');
+            const displayDepth = document.getElementById('displayDepth');
 
             const updateBlockDimensions = () => {
                 const width = parseFloat(inputWidth.value);
@@ -81,6 +84,11 @@
                 // 両方のブロックのジオメトリを更新
                 measureBlock.setAttribute('geometry', `primitive: box; width: ${width}; height: ${height}; depth: ${depth}`);
                 outlineBlock.setAttribute('geometry', `primitive: box; width: ${width}; height: ${height}; depth: ${depth}`);
+
+                // 表示値の更新
+                displayWidth.textContent = width.toFixed(1);
+                displayHeight.textContent = height.toFixed(1);
+                displayDepth.textContent = depth.toFixed(1);
             };
 
             inputWidth.addEventListener('input', updateBlockDimensions);
@@ -99,20 +107,23 @@
             background-color: rgba(255, 255, 255, 0.8);
             padding: 10px;
             border-radius: 5px;
-            z-index: 999; /* A-Frameシーンの上に表示 */
+            z-index: 999;
             font-family: sans-serif;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 10px; /* スライダー用に少し間隔を広げる */
         }
         .ui-container label {
             display: flex;
-            justify-content: space-between;
             align-items: center;
         }
-        .ui-container input[type="number"] {
-            width: 80px;
-            margin-left: 10px;
+        .ui-container input[type="range"] {
+            flex-grow: 1; /* スライダーが利用可能な幅を占めるようにする */
+            margin: 0 10px; /* スライダーとラベルの間のスペース */
+        }
+        .ui-container .value-display {
+            width: 50px; /* 値表示の幅を固定 */
+            text-align: right;
         }
     </style>
 </head>
@@ -121,15 +132,18 @@
     <div class="ui-container">
         <label>
             幅 (m):
-            <input type="number" id="inputWidth" value="1" min="0.1" step="0.1">
+            <input type="range" id="inputWidth" value="1" min="0.1" max="5" step="0.1">
+            <span class="value-display" id="displayWidth">1.0</span>
         </label>
         <label>
             高さ (m):
-            <input type="number" id="inputHeight" value="2" min="0.1" step="0.1">
+            <input type="range" id="inputHeight" value="2" min="0.1" max="5" step="0.1">
+            <span class="value-display" id="displayHeight">2.0</span>
         </label>
         <label>
             奥行き (m):
-            <input type="number" id="inputDepth" value="0.5" min="0.1" step="0.1">
+            <input type="range" id="inputDepth" value="0.5" min="0.1" max="5" step="0.1">
+            <span class="value-display" id="displayDepth">0.5</span>
         </label>
     </div>
 
