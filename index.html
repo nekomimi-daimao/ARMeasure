@@ -74,11 +74,17 @@
         <a-camera>
             <!-- ここにARオブジェクトと計測ロジックを追加します -->
             <a-entity
-                material='color: blue; opacity: 0.5; transparent: true; wireframe: true'
+                material='color: blue; opacity: 0.5; transparent: true'
                 geometry='primitive: box; width: 1; height: 2; depth: 0.5'
                 position="0 0 -5"
                 scale="1 1 1"
-                drag-rotate> <!-- drag-rotateコンポーネントを追加 -->
+                drag-rotate>
+                <a-entity
+                    material='color: black; wireframe: true'
+                    geometry='primitive: box; width: 1; height: 2; depth: 0.5'
+                    position="0 0 0"
+                    scale="1.02 1.02 1.02"> <!-- わずかに大きくして輪郭線にする -->
+                </a-entity>
             </a-entity>
         </a-camera>
     </a-scene>
