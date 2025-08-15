@@ -111,15 +111,14 @@
         <a-camera>
             <!-- ここにARオブジェクトと計測ロジックを追加します -->
             <a-entity
-                id="measureBlock" <!-- IDを追加 -->
+                id="measureBlock"
                 material='color: blue; opacity: 0.5; transparent: true'
                 geometry='primitive: box; width: 1; height: 2; depth: 0.5'
                 position="0 0 -5"
                 scale="1 1 1"
                 drag-rotate>
-                <!-- 輪郭線用のブロックを子オブジェクトとして追加 -->
                 <a-entity
-                    id="outlineBlock" <!-- IDを追加 -->
+                    id="outlineBlock"
                     material='color: black; wireframe: true'
                     geometry='primitive: box; width: 1; height: 2; depth: 0.5'
                     position="0 0 0"
