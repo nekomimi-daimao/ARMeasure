@@ -90,18 +90,22 @@
 
                 // XYZ軸のサイズと位置を更新
                 const axisThickness = 0.02; // 軸の太さ
+                const axisExtension = 0.1; // 10cm (0.1m) 延長
 
                 // X軸
-                axisX.setAttribute('geometry', `primitive: box; width: ${width / 2}; height: ${axisThickness}; depth: ${axisThickness}`);
-                axisX.setAttribute('position', `${width / 4} 0 0`); // 中心から幅の1/4オフセット
+                const axisXLength = (width / 2) + axisExtension;
+                axisX.setAttribute('geometry', `primitive: box; width: ${axisXLength}; height: ${axisThickness}; depth: ${axisThickness}`);
+                axisX.setAttribute('position', `${width / 4 + axisExtension / 2} 0 0`);
 
                 // Y軸
-                axisY.setAttribute('geometry', `primitive: box; width: ${axisThickness}; height: ${height / 2}; depth: ${axisThickness}`);
-                axisY.setAttribute('position', `0 ${height / 4} 0`); // 中心から高さの1/4オフセット
+                const axisYLength = (height / 2) + axisExtension;
+                axisY.setAttribute('geometry', `primitive: box; width: ${axisThickness}; height: ${axisYLength}; depth: ${axisThickness}`);
+                axisY.setAttribute('position', `0 ${height / 4 + axisExtension / 2} 0`);
 
                 // Z軸
-                axisZ.setAttribute('geometry', `primitive: box; width: ${axisThickness}; height: ${axisThickness}; depth: ${depth / 2}`);
-                axisZ.setAttribute('position', `0 0 ${depth / 4}`); // 中心から奥行きの1/4オフセット
+                const axisZLength = (depth / 2) + axisExtension;
+                axisZ.setAttribute('geometry', `primitive: box; width: ${axisThickness}; height: ${axisThickness}; depth: ${axisZLength}`);
+                axisZ.setAttribute('position', `0 0 ${depth / 4 + axisExtension / 2}`);
 
                 // 表示値の更新
                 displayWidth.textContent = width.toFixed(1);
