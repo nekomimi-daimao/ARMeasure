@@ -3,8 +3,71 @@
 <head>
     <title>AR Measure</title>
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <!-- GPS関連のライブラリを削除 -->
     <script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js'></script>
+    <!-- 画面スライドでブロックを回転させるためのカスタムコンポーネント -->
+    <script>
+        AFRAME.registerComponent('drag-rotate', {
+            init: function () {
+                this.initialRotation = 0;
+                this.initialClientX = 0;
+                this.isDragging = false;
+
+                this.onStart = this.onStart.bind(this);
+                this.onMove = this.onMove.bind(this);
+                this.onEnd = this.onEnd.bind(this);
+
+                // マウスイベント
+                this.el.sceneEl.addEventListener('mousedown', this.onStart);
+                this.el.sceneEl.addEventListener('mousemove', this.onMove);
+                this.el.sceneEl.addEventListener('mouseup', this.onEnd);
+                this.el.sceneEl.addEventListener('mouseleave', this.onEnd); // ウィンドウ外にマウスが移動した場合
+
+                // タッチイベント (モバイル対応)
+                this.el.sceneEl.addEventListener('touchstart', this.onStart);
+                this.el.sceneEl.addEventListener('touchmove', this.onMove);
+                this.el.sceneEl.addEventListener('touchend', this.onEnd);
+                this.el.sceneEl.addEventListener('touchcancel', this.onEnd);
+            },
+
+            onStart: function (evt) {
+                // 左クリックまたは単一のタッチ
+                if (evt.button === 0 || (evt.touches && evt.touches.length === 1)) {
+                    this.isDragging = true;
+                    this.initialClientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+                    this.initialRotation = this.el.getAttribute('rotation').y;
+                    evt.preventDefault(); // タッチデバイスでのスクロールを防止
+                }
+            },
+
+            onMove: function (evt) {
+                if (!this.isDragging) { return; }
+
+                const currentClientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+                const deltaX = currentClientX - this.initialClientX;
+                // 感度を調整 (値を大きくすると回転が速くなる)
+                const rotationY = this.initialRotation - deltaX * 0.1; // 直感的なドラッグのためにdeltaを反転
+
+                this.el.setAttribute('rotation', `0 ${rotationY} 0`);
+                evt.preventDefault(); // タッチデバイスでのスクロールを防止
+            },
+
+            onEnd: function () {
+                this.isDragging = false;
+            },
+
+            remove: function () {
+                // イベントリスナーを削除 (コンポーネントが破棄される場合)
+                this.el.sceneEl.removeEventListener('mousedown', this.onStart);
+                this.el.sceneEl.removeEventListener('mousemove', this.onMove);
+                this.el.sceneEl.removeEventListener('mouseup', this.onEnd);
+                this.el.sceneEl.removeEventListener('mouseleave', this.onEnd);
+                this.el.sceneEl.removeEventListener('touchstart', this.onStart);
+                this.el.sceneEl.removeEventListener('touchmove', this.onMove);
+                this.el.sceneEl.removeEventListener('touchend', this.onEnd);
+                this.el.sceneEl.removeEventListener('touchcancel', this.onEnd);
+            }
+        });
+    </script>
 </head>
 <body>
     <a-scene vr-mode-ui='enabled: false' embedded arjs>
@@ -13,8 +76,9 @@
             <a-entity
                 material='color: blue; opacity: 0.5; transparent: true'
                 geometry='primitive: box; width: 1; height: 2; depth: 0.5'
-                position="0 0 -5"  <!-- カメラの相対位置に配置 -->
-                scale="1 1 1">
+                position="0 0 -5"
+                scale="1 1 1"
+                drag-rotate> <!-- drag-rotateコンポーネントを追加 -->
             </a-entity>
         </a-camera>
     </a-scene>
