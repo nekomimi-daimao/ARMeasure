@@ -7,15 +7,16 @@
     <script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js'></script>
 </head>
 <body>
-    <a-scene vr-mode-ui='enabled: false' embedded arjs> <!-- arjs属性をembedded arjsに変更 -->
-        <a-camera></a-camera> <!-- gps-new-camera属性を削除 -->
-        <!-- ここにARオブジェクトと計測ロジックを追加します -->
-        <a-entity
-            material='color: blue; opacity: 0.5; transparent: true'
-            geometry='primitive: box; width: 1; height: 2; depth: 0.5'
-            position="0 0 -5"  <!-- カメラの前に配置する例 -->
-            scale="1 1 1">
-        </a-entity>
+    <a-scene vr-mode-ui='enabled: false' embedded arjs>
+        <a-camera>
+            <!-- ここにARオブジェクトと計測ロジックを追加します -->
+            <a-entity
+                material='color: blue; opacity: 0.5; transparent: true'
+                geometry='primitive: box; width: 1; height: 2; depth: 0.5'
+                position="0 0 -5"  <!-- カメラの相対位置に配置 -->
+                scale="1 1 1">
+            </a-entity>
+        </a-camera>
     </a-scene>
 </body>
 </html>
